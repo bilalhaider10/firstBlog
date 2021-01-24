@@ -6,8 +6,8 @@
 # https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
 # https://learnxinyminutes.com/docs/yaml/
 
-title: fastpages
-description: An easy to use blogging platform with support for Jupyter Notebooks.
+title: Classify Indian people's ethnicity using Deep Learning in Fast AI. 
+description: We are using Bing API to download images and convolutional neural network .
 github_username: bilalhaider10
 # you can comment the below line out if your repo name is not different than your baseurl
 github_repo: "firstBlog"
