@@ -6,7 +6,7 @@
 # https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
 # https://learnxinyminutes.com/docs/yaml/
 
-title: My Personal Blog. 
+title: Bilal's Blog. 
 description: I am a amateur programmer and data science enthusiast. Most of the blogs here are just for fun so don't get offended.
 github_username: bilalhaider10
 # you can comment the below line out if your repo name is not different than your baseurl
