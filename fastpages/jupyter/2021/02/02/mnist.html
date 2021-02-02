@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Recognizing Hand written Digits with deep learning | Bilal’s Blog.</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Recognizing Hand written Digits with deep learning" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I trained the model with models written from scratch as well as pre trained models" />
+<meta property="og:description" content="I trained the model with models written from scratch as well as pre trained models" />
+<link rel="canonical" href="https://bilalhaider10.github.io/firstBlog/fastpages/jupyter/2021/02/02/mnist.html" />
+<meta property="og:url" content="https://bilalhaider10.github.io/firstBlog/fastpages/jupyter/2021/02/02/mnist.html" />
+<meta property="og:site_name" content="Bilal’s Blog." />
+<meta property="og:image" content="https://bilalhaider10.github.io/firstBlog/images/MNIST/mnist.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-02-02T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://bilalhaider10.github.io/firstBlog/fastpages/jupyter/2021/02/02/mnist.html","@type":"BlogPosting","headline":"Recognizing Hand written Digits with deep learning","dateModified":"2021-02-02T00:00:00-06:00","datePublished":"2021-02-02T00:00:00-06:00","image":"https://bilalhaider10.github.io/firstBlog/images/MNIST/mnist.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://bilalhaider10.github.io/firstBlog/fastpages/jupyter/2021/02/02/mnist.html"},"description":"I trained the model with models written from scratch as well as pre trained models","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/firstBlog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://bilalhaider10.github.io/firstBlog/feed.xml" title="Bilal's Blog." /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','G-H4YY7K5K3L','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/firstBlog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/firstBlog/">Bilal&#39;s Blog.</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/firstBlog/about/">About Me</a><a class="page-link" href="/firstBlog/search/">Search</a><a class="page-link" href="/firstBlog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Recognizing Hand written Digits with deep learning</h1><p class="page-description">I trained the model with models written from scratch as well as pre trained models</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-02-02T00:00:00-06:00" itemprop="datePublished">
+        Feb 2, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/firstBlog/categories/#fastpages">fastpages</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/firstBlog/categories/#jupyter">jupyter</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/bilalhaider10/firstBlog/tree/master/_notebooks/2021-02-02-mnist.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/firstBlog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/bilalhaider10/firstBlog/master?filepath=_notebooks%2F2021-02-02-mnist.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/firstBlog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/bilalhaider10/firstBlog/blob/master/_notebooks/2021-02-02-mnist.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/firstBlog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h4"><a href="#Using-18-layers-pre-trained-model">Using 18 layers pre trained model </a></li>
+<li class="toc-entry toc-h2"><a href="#And-now-the-accuracy-jumps-to-98.9%">And now the accuracy jumps to 98.9% </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-02-02-mnist.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Importing FAST AI</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Downloading MNIST Dataset</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Path</span><span class="o">.</span><span class="n">BASE_PATH</span> <span class="o">=</span> <span class="n">path</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Checking the list of files and directories in the path</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(#10) [Path('training/0'),Path('training/2'),Path('training/9'),Path('training/8'),Path('training/7'),Path('training/1'),Path('training/5'),Path('training/4'),Path('training/6'),Path('training/3')]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Getting the files from the directory</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">zeroes</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="o">/</span><span class="s1">'0'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span>
+<span class="n">ones</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="o">/</span><span class="s1">'1'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span>
+<span class="n">twos</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="o">/</span><span class="s1">'2'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span>
+<span class="n">threes</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="o">/</span><span class="s1">'3'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span>
+<span class="n">fours</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="o">/</span><span class="s1">'4'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span>
+<span class="n">fives</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="o">/</span><span class="s1">'5'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span>
+<span class="n">sixes</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="o">/</span><span class="s1">'6'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span>
+<span class="n">sevens</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="o">/</span><span class="s1">'7'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span>
+<span class="n">eights</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="o">/</span><span class="s1">'8'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span>
+<span class="n">nines</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="o">/</span><span class="s1">'9'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span><span class="o">.</span><span class="n">sorted</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Displaying an image</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">im3_path</span> <span class="o">=</span> <span class="n">ones</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">im3</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">im3_path</span><span class="p">)</span>
+<span class="n">im3</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAAoElEQVR4nGNgGASA98pfCxibCV2SW+N/ME6dOX/+6OKUfPnnMCcuOdO/f/zhHHQ77ZkYv+GUZPj36ApOK4//XYdTTund3xickhP+vODAJef29+9dXHKcs//8iccl6ffnzwpkPopXghkYHuLSWP/lzyUxXJKn/v5NwiUX//fPbkEIk1UQXfLZ31vCUCa7JJqcz4+/BbgMZeB8sQVn4NARAABosDHlWlHdewAAAABJRU5ErkJggg==%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Converting each image to a tensor</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">zero_tensors</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">zeroes</span><span class="p">]</span>
+<span class="n">one_tensors</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">ones</span><span class="p">]</span>
+<span class="n">two_tensors</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">twos</span><span class="p">]</span>
+<span class="n">three_tensors</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">threes</span><span class="p">]</span>
+<span class="n">four_tensors</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">fours</span><span class="p">]</span>
+<span class="n">five_tensors</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">fives</span><span class="p">]</span>
+<span class="n">six_tensors</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">sixes</span><span class="p">]</span>
+<span class="n">seven_tensors</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">sevens</span><span class="p">]</span>
+<span class="n">eight_tensors</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">eights</span><span class="p">]</span>
+<span class="n">nine_tensors</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">nines</span><span class="p">]</span>
+
+<span class="nb">len</span><span class="p">(</span><span class="n">three_tensors</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">seven_tensors</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(6131, 6265)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Stacking each image on top of image to make it a stack of images</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">stacked_ones</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">one_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">stacked_twos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">two_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">stacked_threes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">three_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">stacked_fours</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">four_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">stacked_fives</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">five_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">stacked_sixes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">six_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">stacked_sevens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">seven_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">stacked_eights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">eight_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">stacked_nines</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">nine_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">stacked_zeroes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">zero_tensors</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Same for validation set</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">valid_0_tens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> 
+                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'testing'</span><span class="o">/</span><span class="s1">'0'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()])</span>
+<span class="n">valid_0_tens</span> <span class="o">=</span> <span class="n">valid_0_tens</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">valid_1_tens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> 
+                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'testing'</span><span class="o">/</span><span class="s1">'1'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()])</span>
+<span class="n">valid_1_tens</span> <span class="o">=</span> <span class="n">valid_1_tens</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">valid_2_tens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> 
+                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'testing'</span><span class="o">/</span><span class="s1">'2'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()])</span>
+<span class="n">valid_2_tens</span> <span class="o">=</span> <span class="n">valid_2_tens</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">valid_3_tens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> 
+                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'testing'</span><span class="o">/</span><span class="s1">'3'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()])</span>
+<span class="n">valid_3_tens</span> <span class="o">=</span> <span class="n">valid_3_tens</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">valid_4_tens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> 
+                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'testing'</span><span class="o">/</span><span class="s1">'4'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()])</span>
+<span class="n">valid_4_tens</span> <span class="o">=</span> <span class="n">valid_4_tens</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">valid_5_tens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> 
+                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'testing'</span><span class="o">/</span><span class="s1">'5'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()])</span>
+<span class="n">valid_5_tens</span> <span class="o">=</span> <span class="n">valid_5_tens</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">valid_6_tens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> 
+                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'testing'</span><span class="o">/</span><span class="s1">'6'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()])</span>
+<span class="n">valid_6_tens</span> <span class="o">=</span> <span class="n">valid_6_tens</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">valid_7_tens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> 
+                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'testing'</span><span class="o">/</span><span class="s1">'7'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()])</span>
+<span class="n">valid_7_tens</span> <span class="o">=</span> <span class="n">valid_7_tens</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">valid_8_tens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> 
+                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'testing'</span><span class="o">/</span><span class="s1">'8'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()])</span>
+<span class="n">valid_8_tens</span> <span class="o">=</span> <span class="n">valid_8_tens</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">valid_9_tens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tensor</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">o</span><span class="p">))</span> 
+                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'testing'</span><span class="o">/</span><span class="s1">'9'</span><span class="p">)</span><span class="o">.</span><span class="n">ls</span><span class="p">()])</span>
+<span class="n">valid_9_tens</span> <span class="o">=</span> <span class="n">valid_9_tens</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="mi">255</span>
+<span class="n">valid_9_tens</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">valid_0_tens</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([1009, 28, 28]), torch.Size([980, 28, 28]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">stacked_fives</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([5421, 28, 28])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We already have our independent variables
+x
+—these are the images themselves. We'll concatenate them allinto a single tensor, and also change them from a list of matrices (a rank-3 tensor) to a list of vectors (a rank-2tensor). We can do this using
+view
+, which is a PyTorch method that changes the shape of a tensor withoutchanging its contents.
+-1
+is a special parameter to
+view
+that means "make this axis as big as necessary tofit all the data":</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">stacked_zeroes</span><span class="p">,</span><span class="n">stacked_ones</span><span class="p">,</span><span class="n">stacked_twos</span><span class="p">,</span><span class="n">stacked_threes</span><span class="p">,</span><span class="n">stacked_fours</span><span class="p">,</span><span class="n">stacked_fives</span><span class="p">,</span>
+                     <span class="n">stacked_sixes</span><span class="p">,</span><span class="n">stacked_sevens</span><span class="p">,</span><span class="n">stacked_eights</span><span class="p">,</span><span class="n">stacked_nines</span><span class="p">])</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Labels for the image</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_y</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">zeroes</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ones</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">twos</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">threes</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">fours</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">fives</span><span class="p">)</span><span class="o">+</span>
+                <span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">sixes</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">sevens</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">eights</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">nines</span><span class="p">))</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">train_x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">train_y</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([60000, 784]), torch.Size([60000, 1]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A
+Dataset
+in PyTorch is required to return a tuple of
+(x,y)
+when indexed. Python provides a
+zip
+functionwhich, when combined with
+list
+, provides a simple way to get this functionality:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dset</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">train_x</span><span class="p">,</span><span class="n">train_y</span><span class="p">))</span>
+<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">dset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">y</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([784]), tensor([0]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">valid_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">valid_0_tens</span><span class="p">,</span><span class="n">valid_1_tens</span><span class="p">,</span><span class="n">valid_2_tens</span><span class="p">,</span><span class="n">valid_3_tens</span><span class="p">,</span><span class="n">valid_4_tens</span><span class="p">,</span><span class="n">valid_5_tens</span><span class="p">,</span>
+                     <span class="n">valid_6_tens</span><span class="p">,</span><span class="n">valid_7_tens</span><span class="p">,</span><span class="n">valid_8_tens</span><span class="p">,</span><span class="n">valid_9_tens</span><span class="p">])</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">)</span>
+<span class="n">valid_y</span> <span class="o">=</span> <span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_0_tens</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_1_tens</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_2_tens</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_3_tens</span><span class="p">)</span><span class="o">+</span>
+                 <span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_4_tens</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_5_tens</span><span class="p">)</span><span class="o">+</span>
+                 <span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_6_tens</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_7_tens</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_8_tens</span><span class="p">)</span><span class="o">+</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_9_tens</span><span class="p">))</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">valid_dset</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">valid_x</span><span class="p">,</span><span class="n">valid_y</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Getting initial weights</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">init_params</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span> <span class="k">return</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">size</span><span class="p">)</span><span class="o">*</span><span class="n">std</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Using sigmoid function for loss so that the values remain between 0 and 1</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Calculating Loss</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">mnist_loss</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">targets</span><span class="o">==</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">predictions</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Calculating accuracy</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">batch_accuracy</span><span class="p">(</span><span class="n">xb</span><span class="p">,</span> <span class="n">yb</span><span class="p">):</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">xb</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">()</span>
+    <span class="n">correct</span> <span class="o">=</span> <span class="p">(</span><span class="n">preds</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">==</span> <span class="n">yb</span>
+    <span class="k">return</span> <span class="n">correct</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Using a batch to train data instead of using all images or one image</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dl</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+<span class="n">xb</span><span class="p">,</span><span class="n">yb</span> <span class="o">=</span> <span class="n">first</span><span class="p">(</span><span class="n">dl</span><span class="p">)</span>
+<span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">yb</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([256, 784]), torch.Size([256, 1]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">valid_dl</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">valid_dset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dls</span> <span class="o">=</span> <span class="n">DataLoaders</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span> <span class="n">valid_dl</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>nn.Linear
+does the same thing as our
+init_params
+and
+linear
+together. It contains both the
+weights
+and
+biases
+in a single class. Here's how we replicate our model from the previous section:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">opt_func</span><span class="o">=</span><span class="n">SGD</span><span class="p">,</span>
+                <span class="n">loss_func</span><span class="o">=</span><span class="n">mnist_loss</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">batch_accuracy</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Fitting our model with a learning rate of 0.1</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>batch_accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.008503</td>
+      <td>0.105249</td>
+      <td>0.098000</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.008825</td>
+      <td>0.084339</td>
+      <td>0.115600</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.008145</td>
+      <td>0.066740</td>
+      <td>0.149700</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.008239</td>
+      <td>0.054698</td>
+      <td>0.167500</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.008395</td>
+      <td>0.046343</td>
+      <td>0.177900</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.008524</td>
+      <td>0.040353</td>
+      <td>0.184600</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.008615</td>
+      <td>0.035921</td>
+      <td>0.190000</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.008673</td>
+      <td>0.032544</td>
+      <td>0.192300</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0.008706</td>
+      <td>0.029901</td>
+      <td>0.193700</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>0.008720</td>
+      <td>0.027785</td>
+      <td>0.195100</td>
+      <td>00:01</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Making a simple neuronet by adding non linearity and adding layers</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">simple_net</span><span class="p">(</span><span class="n">xb</span><span class="p">):</span> 
+    <span class="n">res</span> <span class="o">=</span> <span class="n">xb</span><span class="nd">@w1</span> <span class="o">+</span> <span class="n">b1</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">tensor</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="nd">@w2</span> <span class="o">+</span> <span class="n">b2</span>
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">w1</span> <span class="o">=</span> <span class="n">init_params</span><span class="p">((</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">init_params</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">w2</span> <span class="o">=</span> <span class="n">init_params</span><span class="p">((</span><span class="mi">30</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="n">init_params</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">simple_net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span><span class="mi">30</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+    
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">simple_net</span><span class="p">,</span> <span class="n">opt_func</span><span class="o">=</span><span class="n">SGD</span><span class="p">,</span>
+                <span class="n">loss_func</span><span class="o">=</span><span class="n">mnist_loss</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">batch_accuracy</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>batch_accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.007038</td>
+      <td>0.109438</td>
+      <td>0.098000</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.005165</td>
+      <td>0.092503</td>
+      <td>0.104900</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.003502</td>
+      <td>0.077504</td>
+      <td>0.132400</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.003200</td>
+      <td>0.067543</td>
+      <td>0.146500</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.003107</td>
+      <td>0.060508</td>
+      <td>0.155700</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.003079</td>
+      <td>0.055172</td>
+      <td>0.162000</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.003078</td>
+      <td>0.050902</td>
+      <td>0.167500</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.003089</td>
+      <td>0.047355</td>
+      <td>0.171100</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0.003104</td>
+      <td>0.044345</td>
+      <td>0.173700</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>0.003119</td>
+      <td>0.041761</td>
+      <td>0.176500</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>0.003134</td>
+      <td>0.039507</td>
+      <td>0.178600</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>0.003146</td>
+      <td>0.037527</td>
+      <td>0.180800</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>0.003156</td>
+      <td>0.035778</td>
+      <td>0.182100</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>0.003163</td>
+      <td>0.034223</td>
+      <td>0.183600</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>0.003169</td>
+      <td>0.032833</td>
+      <td>0.184800</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>0.003174</td>
+      <td>0.031585</td>
+      <td>0.185900</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>0.003178</td>
+      <td>0.030461</td>
+      <td>0.186900</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>0.003180</td>
+      <td>0.029445</td>
+      <td>0.188200</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>0.003182</td>
+      <td>0.028522</td>
+      <td>0.188700</td>
+      <td>00:02</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td>0.003183</td>
+      <td>0.027679</td>
+      <td>0.189300</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>0.003184</td>
+      <td>0.026908</td>
+      <td>0.190000</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>21</td>
+      <td>0.003185</td>
+      <td>0.026200</td>
+      <td>0.191000</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>22</td>
+      <td>0.003185</td>
+      <td>0.025543</td>
+      <td>0.191800</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>23</td>
+      <td>0.003184</td>
+      <td>0.024934</td>
+      <td>0.192300</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>24</td>
+      <td>0.003184</td>
+      <td>0.024367</td>
+      <td>0.192800</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>25</td>
+      <td>0.003183</td>
+      <td>0.023838</td>
+      <td>0.193000</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>26</td>
+      <td>0.003181</td>
+      <td>0.023341</td>
+      <td>0.193400</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>27</td>
+      <td>0.003179</td>
+      <td>0.022878</td>
+      <td>0.193700</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>0.003177</td>
+      <td>0.022441</td>
+      <td>0.194200</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>29</td>
+      <td>0.003174</td>
+      <td>0.022030</td>
+      <td>0.194600</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>0.003170</td>
+      <td>0.021642</td>
+      <td>0.194700</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>31</td>
+      <td>0.003166</td>
+      <td>0.021275</td>
+      <td>0.194800</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>32</td>
+      <td>0.003162</td>
+      <td>0.020928</td>
+      <td>0.195000</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>33</td>
+      <td>0.003157</td>
+      <td>0.020599</td>
+      <td>0.195400</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>34</td>
+      <td>0.003152</td>
+      <td>0.020288</td>
+      <td>0.195900</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>35</td>
+      <td>0.003146</td>
+      <td>0.019992</td>
+      <td>0.196300</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>36</td>
+      <td>0.003140</td>
+      <td>0.019712</td>
+      <td>0.196700</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>37</td>
+      <td>0.003134</td>
+      <td>0.019445</td>
+      <td>0.196900</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>38</td>
+      <td>0.003128</td>
+      <td>0.019193</td>
+      <td>0.196900</td>
+      <td>00:01</td>
+    </tr>
+    <tr>
+      <td>39</td>
+      <td>0.003121</td>
+      <td>0.018953</td>
+      <td>0.197100</td>
+      <td>00:01</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">L</span><span class="p">(</span><span class="n">learn</span><span class="o">.</span><span class="n">recorder</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">itemgot</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">recorder</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.19709999859333038</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As you can see after appying neural net the accuracy is around 20% which is not satisfactory.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We already know that a single nonlinearity with two linear layers is enough to approximate any function. Sowhy would we use deeper models? The reason is performance. With a deeper model (that is, one with morelayers) we do not need to use as many parameters; it turns out that we can use smaller matrices with morelayers, and get better results than we would get with larger matrices, and few layers.
+That means that we can train the model more quickly, and it will take up less memory. In the 1990s researcherswere so focused on the universal approximation theorem that very few were experimenting with more than onenonlinearity. This theoretical but not practical foundation held back the field for years. Some researchers,however, did experiment with deep models, and eventually were able to show that these models could performmuch better in practice. Eventually, theoretical results were developed which showed why this happens. Today,it is extremely unusual to find anybody using a neural network with just one nonlinearity.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Using-18-layers-pre-trained-model">
+<a class="anchor" href="#Using-18-layers-pre-trained-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using 18 layers pre trained model<a class="anchor-link" href="#Using-18-layers-pre-trained-model"> </a>
+</h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">ImageDataLoaders</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="s1">'training'</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="s1">'testing'</span><span class="p">,</span> <span class="n">valid_pct</span><span class="o">=</span><span class="mf">0.2</span><span class="p">);</span>
+<span class="n">db</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;fastai.data.core.DataLoaders at 0x7f36d07f8a00&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">cnn_learner</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">resnet18</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">loss_func</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.060049</td>
+      <td>0.039713</td>
+      <td>0.989357</td>
+      <td>08:18</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="And-now-the-accuracy-jumps-to-98.9%">
+<a class="anchor" href="#And-now-the-accuracy-jumps-to-98.9%" aria-hidden="true"><span class="octicon octicon-link"></span></a>And now the accuracy jumps to 98.9%<a class="anchor-link" href="#And-now-the-accuracy-jumps-to-98.9%"> </a>
+</h2>
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="bilalhaider10/firstBlog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/firstBlog/fastpages/jupyter/2021/02/02/mnist.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/firstBlog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/firstBlog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/firstBlog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>I am a amateur programmer and data science enthusiast. Most of the blogs here are just for fun so don&#39;t get offended.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/bilalhaider10" title="bilalhaider10"><svg class="svg-icon grey"><use xlink:href="/firstBlog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/haider__tweeets" title="haider__tweeets"><svg class="svg-icon grey"><use xlink:href="/firstBlog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
